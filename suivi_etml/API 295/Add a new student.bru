@@ -1,0 +1,23 @@
+meta {
+  name: Add a new student
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3333/students/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "zidane",
+    "firstname": "thomas"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
