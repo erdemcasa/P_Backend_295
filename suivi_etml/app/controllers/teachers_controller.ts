@@ -1,6 +1,7 @@
 
 import Teacher from "#models/teacher"
 import { HttpContext } from "@adonisjs/core/http"
+import { teacherValidator } from "../validators/teacher.ts"
 
 export default class TeachersController {
   /**

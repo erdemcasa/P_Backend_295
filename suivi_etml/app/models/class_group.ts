@@ -6,15 +6,13 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 export default class ClassGroup extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
-
   @column()
   declare name: string
-
-
+  @column()
+  declare teacherId: number | null
+  // Relation : 1 classe → 1 enseignant
   @belongsTo(() => Teacher)
   declare teacher: BelongsTo<typeof Teacher>
-  @column()
-  declare teacherId: Number
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -22,3 +20,4 @@ export default class ClassGroup extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 }
+

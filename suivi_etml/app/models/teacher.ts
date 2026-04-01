@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import User from './user.js'
-
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import ClassGroup from './class_group.js'
 
 export default class Teacher extends BaseModel {
   @column({ isPrimary: true })
@@ -17,6 +17,8 @@ export default class Teacher extends BaseModel {
   @column()
   declare email: string
 
+  @hasMany(() => ClassGroup)
+  declare classGroups: HasMany<typeof ClassGroup>
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
