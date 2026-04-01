@@ -10,7 +10,6 @@ export default class ClassGroup extends BaseModel {
   declare name: string
   @column()
   declare teacherId: number | null
-  // Relation : 1 classe → 1 enseignant
   @belongsTo(() => Teacher)
   declare teacher: BelongsTo<typeof Teacher>
 

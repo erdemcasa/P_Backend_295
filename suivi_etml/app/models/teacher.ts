@@ -3,6 +3,7 @@ import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import User from './user.js'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import ClassGroup from './class_group.js'
+import Comment from './comment.js'
 
 export default class Teacher extends BaseModel {
   @column({ isPrimary: true })
@@ -24,6 +25,10 @@ export default class Teacher extends BaseModel {
   declare user: BelongsTo<typeof User>
   @column()
   declare userId: Number
+
+
+  @hasMany(() => Comment)
+  declare comments: HasMany<typeof Comment>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

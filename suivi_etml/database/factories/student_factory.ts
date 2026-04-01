@@ -6,7 +6,7 @@ export const StudentFactory = factory
     return {
       name: faker.person.lastName(),
       firstname: faker.person.firstName(),
-
+      classGroupId:faker.number.int({ min: 1, max: 7 })
     }
   })
   .build()

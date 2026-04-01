@@ -8,6 +8,7 @@
 */
 
 import ClassesGroupsController from '#controllers/classes_groups_controller'
+import CommentsController from '#controllers/comments_controller'
 import StudentsController from '#controllers/students_controller'
 import TeachersController from '#controllers/teachers_controller'
 import ClassGroup from '#models/class_group'
@@ -33,7 +34,22 @@ router.get('/all', async () => {
   // curl -X GET http://localhost:3333/all
 })
 
+
+// Routes pour le CRUD /students
 router.resource('students', StudentsController).apiOnly()
+
+// Routes imbriquées sur les commentaires
+// pour le CRUD /students/:student_id/comments
+router
+ .group(() => {
+
+ router.resource('comments', CommentsController).apiOnly()
+
+}).prefix('students/:student_id')
+
+// Routes pour le CRUD /teachers
 router.resource('teachers', TeachersController).apiOnly()
-router.resource('classesGroups', ClassesGroupsController).apiOnly()
+
+// Routes pour le CRUD /classGroups
+router.resource('classGroups', ClassesGroupsController).apiOnly()
 
