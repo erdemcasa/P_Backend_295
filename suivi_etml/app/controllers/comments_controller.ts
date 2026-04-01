@@ -1,5 +1,6 @@
 import Comment from '#models/comment'
 import Student from '#models/student'
+import { commentValidator } from '#validators/comment'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class CommentsController {
@@ -16,17 +17,29 @@ export default class CommentsController {
     // xh GET localhost:3333/students/1/comments
   }
 
-  async store({ params, request, response }: HttpContext) {
-    const student = await Student.findOrFail(params.student_id)
 
-    const { content, teacherId } = request.only(['content', 'teacherId'])
-
-    const comment = await student.related('comments').create({ content, teacherId })
-
-    return response.created({message: `Le commentaire a été créé`, data: comment})
+  async store({ params, request, response, auth }: HttpContext) {
+    // Récupération des données envoyées par le client et validation des données
+    const { content } = await request.validateUsing(commentValidator)
+    // Récupération de l'utilisateur authentifié
+    const user = auth.user!
+    // Chargement de l'enseignant lié à cet utilisateur
+    const teacher = await user.related('teacher').query().first()
+    if (!teacher) {
+      return response.badRequest({ message: 'Teacher not found' })
+    }
+    const teacherId = teacher.id
+    // Création du commentaire lié à l'élève
+    const comment = await Comment.create({
+      content,
+      studentId: params.student_id,
+      teacherId,
+    })
+    // Réponse HTTP 201 avec le commentaire
+    return response.created(comment)
 
     // utilisation XH
-    // xh POST localhost:3333/students/1/comments content="Très bon travail !" teacherId=1
+    // xh POST localhost:3333/students/1/comments content="Très bon travail !" --auth
   }
 
   async update({ params, request, response }: HttpContext) {

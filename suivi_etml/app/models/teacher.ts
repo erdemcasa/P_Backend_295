@@ -23,12 +23,13 @@ export default class Teacher extends BaseModel {
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
+  
   @column()
   declare userId: Number
 
-
   @hasMany(() => Comment)
   declare comments: HasMany<typeof Comment>
+
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

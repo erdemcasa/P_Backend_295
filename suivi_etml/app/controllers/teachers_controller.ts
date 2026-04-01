@@ -7,7 +7,7 @@ export default class TeachersController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {
+  async index({ }: HttpContext) {
     return Teacher.query().orderBy('name').orderBy('firstname')
   }
 
@@ -15,21 +15,23 @@ export default class TeachersController {
    * Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
-    const { name, firstname } = await request.validateUsing(teacherValidator)
+    const { name, firstname, email, userId } = await request.validateUsing(teacherValidator)
 
-    const teacher = await Teacher.create({ name, firstname })
+    const teacher = await Teacher.create({ name, firstname, email, userId })
+    return response.created(teacher)
 
-    return response.created({message: `Enseignant ${teacher.name} ${teacher.firstname} a été crée`, data: teacher})
+    // utilisation XH
+    // xh POST localhost:3333/teachers name="Smith" firstname="John" email="john.smith@example.com" userId=1
   }
 
 
   async update({ params, request, response }: HttpContext) {
     const teacherBefore = await Teacher.findOrFail(params.id)
 
-    const { name, firstname } = await request.validateUsing(teacherValidator)
+    const { name, firstname, email, userId } = await request.validateUsing(teacherValidator)
 
     const teacher = await Teacher.findOrFail(params.id)
-    teacher.merge({ name, firstname })
+    teacher.merge({ name, firstname, email, userId })
 
     await teacher.save()
 
@@ -48,7 +50,7 @@ export default class TeachersController {
   /**
    * Edit individual record
    */
-  async edit({ params }: HttpContext) {}
+  async edit({ params }: HttpContext) { }
 
   /**
    * Delete record

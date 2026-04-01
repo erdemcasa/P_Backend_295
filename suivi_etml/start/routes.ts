@@ -15,6 +15,8 @@ import ClassGroup from '#models/class_group'
 import Student from '#models/student'
 import Teacher from '#models/teacher'
 import router from '@adonisjs/core/services/router'
+import { middleware } from './kernel.js'
+import AuthController from '#controllers/auth_controller'
 
 router.get('/', async () => {
   return 'Bienvenu dans l\'API REST en AdonisJS'
@@ -35,21 +37,37 @@ router.get('/all', async () => {
 })
 
 
-// Routes pour le CRUD /students
-router.resource('students', StudentsController).apiOnly()
-
-// Routes imbriquées sur les commentaires
-// pour le CRUD /students/:student_id/comments
 router
- .group(() => {
+  .group(() => {
+    // Routes pour le CRUD /students
+    router.resource('students', StudentsController).apiOnly()
+    // Routes pour le CRUD /teachers
+    router.resource('teachers', TeachersController).apiOnly()
+    // Routes pour le CRUD /classGroup
+    router.resource('classGroups', ClassesGroupsController).apiOnly()
+    // Routes imbriquées sur les commentaires
+    // pour le CRUD /students/:student_id/comments
+    router
+      .group(() => {
+        router.resource('comments', CommentsController).apiOnly()
+      })
+      .prefix('students/:student_id')
+  })
+  .use(middleware.auth())
 
- router.resource('comments', CommentsController).apiOnly()
+// Routes pour l'authentification
+router
+  .group(() => {
+    router.post('register', [AuthController, 'register'])
+    router.post('login', [AuthController, 'login'])
+    router.post('logout', [AuthController, 'logout']).use(middleware.auth())
+  })
+  .prefix('user')
 
-}).prefix('students/:student_id')
 
-// Routes pour le CRUD /teachers
-router.resource('teachers', TeachersController).apiOnly()
+// Utilisation XH pour l'authentification
+// xh POST localhost:3333/user/register username="erdem67" email="erdem67@example.com" password="password"
+// xh POST localhost:3333/user/login username="erdem67" password="password"
+// xh POST localhost:3333/user/logout --auth
 
-// Routes pour le CRUD /classGroups
-router.resource('classGroups', ClassesGroupsController).apiOnly()
 
